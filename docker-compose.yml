@@ -1,0 +1,12 @@
+services:
+  cream-house:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cream_house_app
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
