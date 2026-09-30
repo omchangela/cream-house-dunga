@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import Image from "next/image";
 
 const links = ["Home", "Products", "About", "Flavours", "Reviews", "Contact"];
 
@@ -54,27 +55,25 @@ export default function Navbar({
               e.preventDefault();
               scrollTo("Home");
             }}
-            className="flex items-center gap-2 text-xl sm:text-2xl font-black tracking-tight group cursor-pointer"
+            className="flex items-center group cursor-pointer"
+            aria-label="Cream House Home"
           >
             <div
-              className="w-9 sm:w-10 h-9 sm:h-10 rounded-2xl flex items-center justify-center shadow-[0_4px_16px_rgba(192,76,42,0.35)] group-hover:scale-105 transition-transform duration-300"
-              style={{ background: "linear-gradient(135deg, #C04C2A, #D4863A)" }}
+              className="flex items-center px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full transition-all duration-300 group-hover:scale-105 shadow-[0_4px_16px_rgba(42,14,0,0.18)]"
+              style={{
+                background: "#2A0E00",
+                border: "1.5px solid rgba(192, 76, 42, 0.35)",
+              }}
             >
-              <span className="text-lg sm:text-xl">🍦</span>
+              <Image
+                src="/images/nav-log-bg.webp"
+                alt="Cream House Logo"
+                width={120}
+                height={40}
+                className="h-6 sm:h-7.5 w-auto object-contain"
+                priority
+              />
             </div>
-            <span style={{ color: "#2A0E00" }}>
-              Cream
-              <span
-                style={{
-                  background: "linear-gradient(135deg, #C04C2A, #D4863A)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  color: "#C04C2A",
-                }}
-              >
-                House
-              </span>
-            </span>
           </a>
 
           {/* Desktop Nav */}
@@ -177,21 +176,22 @@ export default function Navbar({
         style={{ background: "rgba(255,248,238,0.98)", backdropFilter: "blur(24px)" }}
       >
         <div className="flex flex-col items-center justify-center h-full gap-6">
-          <div className="mb-4 flex items-center gap-2.5">
-            <span className="text-4xl">🍦</span>
-            <span className="text-3xl font-black" style={{ color: "#2A0E00" }}>
-              Cream
-              <span
-                style={{
-                  background: "linear-gradient(135deg, #C04C2A, #D4863A)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  color: "#C04C2A",
-                }}
-              >
-                House
-              </span>
-            </span>
+          <div className="mb-4 flex items-center justify-center">
+            <div
+              className="flex items-center px-5 py-2.5 rounded-full shadow-lg"
+              style={{
+                background: "#2A0E00",
+                border: "1.5px solid rgba(192, 76, 42, 0.35)",
+              }}
+            >
+              <Image
+                src="/images/nav-log-bg.webp"
+                alt="Cream House"
+                width={130}
+                height={45}
+                className="h-8.5 w-auto object-contain"
+              />
+            </div>
           </div>
 
           {links.map((l) => (

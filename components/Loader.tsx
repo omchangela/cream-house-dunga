@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import Image from "next/image";
 
 export default function Loader({ onDone }: { onDone: () => void }) {
   const [progress, setProgress] = useState(0);
@@ -34,14 +35,24 @@ export default function Loader({ onDone }: { onDone: () => void }) {
         style={{ background: "radial-gradient(circle, rgba(212,134,58,0.12) 0%, transparent 70%)", filter: "blur(60px)" }} />
 
       <div className="flex flex-col items-center gap-8 relative z-10">
-        <div className="flex items-center gap-3">
-          <span className="text-6xl animate-bounce-ice drop-shadow-lg">🍦</span>
-          <div>
-            <h2 className="text-4xl font-black tracking-tight" style={{ color: "#2A0E00" }}>
-              Cream<span style={{ background: "linear-gradient(135deg, #C04C2A, #D4863A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>House</span>
-            </h2>
-            <p className="text-xs font-black tracking-[0.25em] uppercase" style={{ color: "#7A3E10" }}>Premium Ice Cream</p>
+        <div className="flex flex-col items-center gap-3">
+          <div
+            className="flex items-center px-6 py-3 rounded-full shadow-2xl animate-bounce-ice"
+            style={{
+              background: "#2A0E00",
+              border: "2px solid rgba(192, 76, 42, 0.4)",
+            }}
+          >
+            <Image
+              src="/images/nav-log-bg.webp"
+              alt="Cream House"
+              width={140}
+              height={50}
+              className="h-10 w-auto object-contain"
+              priority
+            />
           </div>
+          <p className="text-xs font-black tracking-[0.25em] uppercase" style={{ color: "#7A3E10" }}>Premium Ice Cream</p>
         </div>
 
         <div className="w-72 flex flex-col gap-2">

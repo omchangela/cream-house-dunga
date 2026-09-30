@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 export default function Footer() {
   const links = {
     "Quick Links": ["Home", "Products", "About", "Flavours", "Reviews"],
@@ -15,13 +17,14 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 pb-16">
           {/* Brand */}
           <div className="lg:col-span-2">
-            <div className="flex items-center gap-2.5 text-xl font-black mb-4">
-              <div className="w-9 h-9 gradient-bg rounded-xl flex items-center justify-center shadow-[0_4px_16px_rgba(212,134,58,0.4)]">
-                <span className="text-lg">🍦</span>
-              </div>
-              <span style={{ color: "rgba(255,240,215,0.95)" }}>
-                Cream<span className="gradient-text">House</span>
-              </span>
+            <div className="flex items-center mb-4">
+              <Image
+                src="/images/nav-log-bg.webp"
+                alt="Cream House Logo"
+                width={130}
+                height={45}
+                className="h-9 w-auto object-contain"
+              />
             </div>
             <p className="text-sm leading-relaxed mb-6 max-w-sm" style={{ color: "rgba(255,200,150,0.55)" }}>
               Premium handcrafted ice creams made with fresh milk and natural ingredients since 1995. Every scoop crafted with love.
