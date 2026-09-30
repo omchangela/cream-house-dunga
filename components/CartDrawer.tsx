@@ -1,425 +1,87 @@
 "use client";
+type CartItem = { name: string; price: number; qty: number };
+type Props = { items: CartItem[]; onRemove: (i: number) => void; onClose: () => void };
 
-import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
-import { X, Plus, Minus, Trash2, ShoppingBag, Sparkles, ArrowRight, CheckCircle2 } from "lucide-react";
-import { useCart } from "./CartContext";
-
-export default function CartDrawer() {
-  const {
-    cart,
-    isCartOpen,
-    setIsCartOpen,
-    removeFromCart,
-    updateQuantity,
-    totalCount,
-    totalPrice,
-  } = useCart();
-
-  const [checkoutComplete, setCheckoutComplete] = useState(false);
-
-  // Bonus gift milestone (e.g. ₹200 for free artisan waffle crisp)
-  const bonusThreshold = 200;
-  const progressPercent = Math.min(100, (totalPrice / bonusThreshold) * 100);
-
-  if (!isCartOpen) return null;
-
-  const handleCheckout = () => {
-    setCheckoutComplete(true);
-    setTimeout(() => {
-      setCheckoutComplete(false);
-      setIsCartOpen(false);
-    }, 2500);
-  };
-
+export default function CartDrawer({ items, onRemove, onClose }: Props) {
+  const total = items.reduce((s, it) => s + it.price * it.qty, 0);
   return (
-    <div
-      style={{
-        position: "fixed",
-        inset: 0,
-        zIndex: 200,
-        display: "flex",
-        justifyContent: "flex-end",
-      }}
-    >
-      {/* Backdrop */}
-      <div
-        onClick={() => setIsCartOpen(false)}
-        style={{
-          position: "absolute",
-          inset: 0,
-          background: "rgba(30, 18, 13, 0.45)",
-          backdropFilter: "blur(8px)",
-          transition: "opacity 0.3s ease",
-        }}
-      />
+    <div id="cart-drawer" className="fixed inset-0 z-[200] pointer-events-none">
+      {/* Overlay */}
+      <div className="absolute inset-0 backdrop-blur-sm" onClick={onClose}
+        style={{ background: "rgba(61,28,2,0.4)", pointerEvents: "all" }} />
 
-      {/* Slide-out Drawer */}
-      <div
-        style={{
-          position: "relative",
-          width: "100%",
-          maxWidth: "460px",
-          height: "100%",
-          background: "#FFFFFF",
-          boxShadow: "-20px 0 50px rgba(0, 0, 0, 0.18)",
-          display: "flex",
-          flexDirection: "column",
-          zIndex: 10,
-          animation: "slideInRight 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
-        }}
-      >
-        {/* Drawer Header */}
-        <div
-          style={{
-            padding: "24px 28px",
-            borderBottom: "1px solid rgba(46, 27, 19, 0.08)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            background: "var(--bg-cream-soft)",
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            <div
-              style={{
-                width: "36px",
-                height: "36px",
-                borderRadius: "50%",
-                background: "var(--berry-soft)",
-                color: "var(--berry-velvet)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <ShoppingBag size={18} />
+      {/* Drawer */}
+      <div className="absolute top-0 right-0 h-full w-full max-w-[420px] flex flex-col shadow-[-24px_0_80px_rgba(61,28,2,0.2)]"
+        style={{ background: "#FFFCF7", borderLeft: "1px solid rgba(212,134,58,0.15)", pointerEvents: "all" }}>
+
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 py-5"
+          style={{ borderBottom: "1px solid rgba(212,134,58,0.12)" }}>
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 gradient-bg rounded-xl flex items-center justify-center">
+              <svg width="16" height="16" fill="none" stroke="white" strokeWidth="2" viewBox="0 0 24 24">
+                <circle cx="8" cy="21" r="1" /><circle cx="19" cy="21" r="1" />
+                <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
+              </svg>
             </div>
-            <div>
-              <h3
-                className="serif-heading"
-                style={{ fontSize: "20px", color: "var(--cocoa-dark)" }}
-              >
-                Your Tasting Box
-              </h3>
-              <span style={{ fontSize: "12px", color: "var(--cocoa-muted)" }}>
-                {totalCount} {totalCount === 1 ? "item" : "items"} selected
+            <h3 className="text-lg font-black" style={{ color: "#1A0A00" }}>Your Cart</h3>
+            {items.length > 0 && (
+              <span className="gradient-bg text-white text-xs font-black w-5 h-5 rounded-full flex items-center justify-center">
+                {items.reduce((s, i) => s + i.qty, 0)}
               </span>
-            </div>
+            )}
           </div>
-
-          <button
-            onClick={() => setIsCartOpen(false)}
-            style={{
-              width: "36px",
-              height: "36px",
-              borderRadius: "50%",
-              background: "rgba(46, 27, 19, 0.06)",
-              border: "none",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-              color: "var(--cocoa-rich)",
-            }}
-          >
-            <X size={18} />
+          <button onClick={onClose}
+            className="w-9 h-9 rounded-xl flex items-center justify-center font-black transition-all duration-300 hover:gradient-bg hover:text-white"
+            style={{ background: "rgba(212,134,58,0.08)", border: "1px solid rgba(212,134,58,0.2)", color: "#8B5E35" }}>
+            ✕
           </button>
         </div>
 
-        {/* Free Gift Milestone Bar */}
-        <div
-          style={{
-            padding: "14px 28px",
-            background: "var(--bg-cream)",
-            borderBottom: "1px solid rgba(46, 27, 19, 0.06)",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              fontSize: "12px",
-              fontWeight: 600,
-              color: "var(--cocoa-rich)",
-              marginBottom: "6px",
-            }}
-          >
-            <span>
-              {totalPrice >= bonusThreshold
-                ? "🎉 You unlocked a Free Warm Waffle Chip!"
-                : `Add ₹${bonusThreshold - totalPrice} more for a Free Warm Waffle Chip!`}
-            </span>
-            <span>{Math.round(progressPercent)}%</span>
-          </div>
-          <div
-            style={{
-              height: "6px",
-              background: "rgba(46, 27, 19, 0.1)",
-              borderRadius: "999px",
-              overflow: "hidden",
-            }}
-          >
-            <div
-              style={{
-                height: "100%",
-                width: `${progressPercent}%`,
-                background: "linear-gradient(90deg, var(--gold-honey), var(--berry-velvet))",
-                borderRadius: "999px",
-                transition: "width 0.4s ease",
-              }}
-            />
-          </div>
-        </div>
-
-        {/* Items List */}
-        <div
-          style={{
-            flexGrow: 1,
-            overflowY: "auto",
-            padding: "24px 28px",
-            display: "flex",
-            flexDirection: "column",
-            gap: "18px",
-          }}
-        >
-          {cart.length === 0 ? (
-            <div
-              style={{
-                flexGrow: 1,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                textAlign: "center",
-                padding: "40px 20px",
-              }}
-            >
-              <div
-                style={{
-                  width: "70px",
-                  height: "70px",
-                  borderRadius: "50%",
-                  background: "var(--bg-cream)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  color: "var(--cocoa-muted)",
-                  marginBottom: "16px",
-                }}
-              >
-                <ShoppingBag size={32} />
-              </div>
-              <h4
-                className="serif-heading"
-                style={{ fontSize: "20px", color: "var(--cocoa-dark)", marginBottom: "8px" }}
-              >
-                Your Tasting Box is Empty
-              </h4>
-              <p
-                style={{
-                  fontSize: "14px",
-                  color: "var(--cocoa-muted)",
-                  maxWidth: "260px",
-                  lineHeight: 1.6,
-                }}
-              >
-                Explore our artisan scoops, handcrafted tacos, or rich milkshakes to begin.
-              </p>
-            </div>
-          ) : (
-            cart.map((item) => (
-              <div
-                key={item.id}
-                style={{
-                  display: "flex",
-                  gap: "16px",
-                  padding: "16px",
-                  borderRadius: "20px",
-                  background: "var(--bg-cream-soft)",
-                  border: "1px solid rgba(46, 27, 19, 0.08)",
-                  alignItems: "center",
-                }}
-              >
-                <div
-                  style={{
-                    position: "relative",
-                    width: "65px",
-                    height: "65px",
-                    flexShrink: 0,
-                    borderRadius: "14px",
-                    background: "#FFFFFF",
-                    padding: "6px",
-                  }}
-                >
-                  <Image
-                    src={item.image}
-                    alt={item.name}
-                    fill
-                    style={{ objectFit: "contain" }}
-                  />
-                </div>
-
-                <div style={{ flexGrow: 1 }}>
-                  <span
-                    style={{
-                      fontSize: "11px",
-                      fontWeight: 700,
-                      color: "var(--berry-velvet)",
-                      textTransform: "uppercase",
-                      letterSpacing: "0.06em",
-                    }}
-                  >
-                    {item.category}
-                  </span>
-                  <h4
-                    style={{
-                      fontSize: "15px",
-                      fontWeight: 700,
-                      color: "var(--cocoa-dark)",
-                      lineHeight: 1.3,
-                      marginBottom: "6px",
-                    }}
-                  >
-                    {item.name}
-                  </h4>
-                  <div
-                    style={{
-                      fontSize: "14px",
-                      fontWeight: 700,
-                      color: "var(--cocoa-rich)",
-                    }}
-                  >
-                    ₹{item.price}
-                  </div>
-                </div>
-
-                {/* Quantity Controls */}
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "8px",
-                    background: "#FFFFFF",
-                    border: "1px solid rgba(46, 27, 19, 0.1)",
-                    borderRadius: "999px",
-                    padding: "4px 8px",
-                  }}
-                >
-                  <button
-                    onClick={() => updateQuantity(item.id, -1)}
-                    style={{
-                      border: "none",
-                      background: "transparent",
-                      cursor: "pointer",
-                      display: "flex",
-                      color: "var(--cocoa-rich)",
-                    }}
-                  >
-                    <Minus size={14} />
-                  </button>
-                  <span
-                    style={{
-                      fontSize: "13px",
-                      fontWeight: 700,
-                      minWidth: "16px",
-                      textAlign: "center",
-                    }}
-                  >
-                    {item.quantity}
-                  </span>
-                  <button
-                    onClick={() => updateQuantity(item.id, 1)}
-                    style={{
-                      border: "none",
-                      background: "transparent",
-                      cursor: "pointer",
-                      display: "flex",
-                      color: "var(--cocoa-rich)",
-                    }}
-                  >
-                    <Plus size={14} />
-                  </button>
-                </div>
-              </div>
-            ))
-          )}
-        </div>
-
-        {/* Drawer Footer with Checkout */}
-        {cart.length > 0 && (
-          <div
-            style={{
-              padding: "24px 28px",
-              borderTop: "1px solid rgba(46, 27, 19, 0.08)",
-              background: "var(--bg-cream-soft)",
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "baseline",
-                marginBottom: "18px",
-              }}
-            >
-              <span style={{ fontSize: "14px", color: "var(--cocoa-muted)" }}>
-                Total Order Value
-              </span>
-              <span
-                className="serif-heading"
-                style={{
-                  fontSize: "30px",
-                  fontWeight: 800,
-                  color: "var(--cocoa-dark)",
-                }}
-              >
-                ₹{totalPrice}
-              </span>
-            </div>
-
-            {checkoutComplete ? (
-              <div
-                style={{
-                  padding: "16px",
-                  borderRadius: "16px",
-                  background: "#DCFCE7",
-                  color: "#166534",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: "10px",
-                  fontWeight: 700,
-                  fontSize: "15px",
-                }}
-              >
-                <CheckCircle2 size={20} />
-                <span>Order Dispatched to Parlour! 🍨</span>
-              </div>
-            ) : (
-              <button
-                onClick={handleCheckout}
-                className="btn-primary"
-                style={{ width: "100%", padding: "16px", fontSize: "15px" }}
-              >
-                <span>Proceed To Flash Delivery</span>
-                <ArrowRight size={18} />
+        {/* Items */}
+        <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-3">
+          {items.length === 0 ? (
+            <div className="flex-1 flex flex-col items-center justify-center gap-4 py-20">
+              <span className="text-6xl">🍦</span>
+              <p className="font-bold" style={{ color: "#8B5E35" }}>Your cart is empty</p>
+              <button onClick={onClose}
+                className="gradient-bg text-white px-6 py-3 rounded-full text-sm font-bold shadow-[0_8px_24px_rgba(212,134,58,0.4)]">
+                Browse Products
               </button>
-            )}
+            </div>
+          ) : items.map((it, i) => (
+            <div key={i} className="flex items-center gap-3 p-4 rounded-2xl"
+              style={{ background: "rgba(255,245,232,0.8)", border: "1px solid rgba(212,134,58,0.12)" }}>
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
+                style={{ background: "rgba(212,134,58,0.1)" }}>🍦</div>
+              <div className="flex-1 min-w-0">
+                <div className="text-sm font-black truncate" style={{ color: "#1A0A00" }}>
+                  {it.name}{it.qty > 1 ? ` ×${it.qty}` : ""}
+                </div>
+                <div className="text-sm font-black gradient-text">₹{it.price * it.qty}</div>
+              </div>
+              <button onClick={() => onRemove(i)}
+                className="w-7 h-7 rounded-lg text-xs font-black flex items-center justify-center transition-all duration-200 hover:text-white hover:gradient-bg"
+                style={{ background: "rgba(212,134,58,0.08)", color: "#D4863A", border: "1px solid rgba(212,134,58,0.2)" }}>
+                ✕
+              </button>
+            </div>
+          ))}
+        </div>
+
+        {/* Footer */}
+        {items.length > 0 && (
+          <div className="p-6 flex flex-col gap-4" style={{ borderTop: "1px solid rgba(212,134,58,0.12)" }}>
+            <div className="flex justify-between items-center">
+              <span className="font-bold" style={{ color: "#8B5E35" }}>Total</span>
+              <span className="text-2xl font-black gradient-text">₹{total}</span>
+            </div>
+            <button className="w-full gradient-bg text-white py-4 rounded-2xl font-bold text-lg shadow-[0_8px_32px_rgba(212,134,58,0.4)] hover:opacity-90 hover:-translate-y-0.5 transition-all duration-300">
+              Proceed to Checkout →
+            </button>
           </div>
         )}
       </div>
-
-      <style jsx>{`
-        @keyframes slideInRight {
-          from {
-            transform: translateX(100%);
-          }
-          to {
-            transform: translateX(0);
-          }
-        }
-      `}</style>
     </div>
   );
 }

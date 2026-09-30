@@ -1,118 +1,82 @@
 "use client";
-
-import { CartProvider, useCart } from "@/components/CartContext";
-import SmoothScrollAndCursor from "@/components/SmoothScrollAndCursor";
+import { useState, useCallback } from "react";
 import Navbar from "@/components/Navbar";
-import HeroSection from "@/components/HeroSection";
-import FlavorExperience from "@/components/FlavorExperience";
-import SignatureProducts from "@/components/SignatureProducts";
-import MilkshakeBar from "@/components/MilkshakeBar";
-import StoryProcess from "@/components/StoryProcess";
-import TastingFlightBuilder from "@/components/TastingFlightBuilder";
-import TestimonialsAndFAQ from "@/components/TestimonialsAndFAQ";
+import Hero from "@/components/Hero";
+import Marquee from "@/components/Marquee";
+import Products from "@/components/Products";
+import About from "@/components/About";
+import Flavours from "@/components/Flavours";
+import Testimonials from "@/components/Testimonials";
+import CTA from "@/components/CTA";
 import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
-import { Sparkles } from "lucide-react";
 
-function ToastNotification() {
-  const { toastMessage } = useCart();
-  if (!toastMessage) return null;
-
-  return (
-    <div
-      style={{
-        position: "fixed",
-        bottom: "30px",
-        left: "50%",
-        transform: "translateX(-50%)",
-        background: "rgba(30, 18, 13, 0.92)",
-        backdropFilter: "blur(16px)",
-        color: "#FFFFFF",
-        padding: "12px 24px",
-        borderRadius: "9999px",
-        fontSize: "14px",
-        fontWeight: 600,
-        boxShadow: "0 15px 35px rgba(0, 0, 0, 0.25)",
-        zIndex: 999,
-        display: "flex",
-        alignItems: "center",
-        gap: "10px",
-        border: "1px solid rgba(255, 255, 255, 0.15)",
-        animation: "toastPop 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
-      }}
-    >
-      <Sparkles size={16} color="var(--gold-honey)" />
-      <span>{toastMessage}</span>
-
-      <style jsx>{`
-        @keyframes toastPop {
-          from {
-            opacity: 0;
-            transform: translate(-50%, 20px) scale(0.95);
-          }
-          to {
-            opacity: 1;
-            transform: translate(-50%, 0) scale(1);
-          }
-        }
-      `}</style>
-    </div>
-  );
-}
-
-function MainAppContent() {
-  return (
-    <div style={{ position: "relative", minHeight: "100vh" }}>
-      {/* Ambient Atmospheric Lightings */}
-      <div className="ambient-glow-1" />
-      <div className="ambient-glow-2" />
-
-      {/* Smooth Scroll Engine and Interactive Cursor */}
-      <SmoothScrollAndCursor />
-
-      {/* Floating Glassmorphic Header */}
-      <Navbar />
-
-      {/* Main Page Flow */}
-      <main>
-        {/* 1. Hero with GSAP 3D Stage & Staggered Typography */}
-        <HeroSection />
-
-        {/* 2. Interactive Churning Room (10 Scoops with Dynamic Ambient Morphing) */}
-        <FlavorExperience />
-
-        {/* 3. Handcrafted Signature Creations (Tacos, Chocobars, Kulfis) */}
-        <SignatureProducts />
-
-        {/* 4. Velvet Milkshake Bar */}
-        <MilkshakeBar />
-
-        {/* 5. Heritage & 4 Pillars of Slow Churning */}
-        <StoryProcess />
-
-        {/* 6. Interactive 3-Step Tasting Flight Builder */}
-        <TastingFlightBuilder />
-
-        {/* 7. Culinary Acclaim, FAQs & Parlour Hours */}
-        <TestimonialsAndFAQ />
-      </main>
-
-      {/* 8. Artisanal Footer with Kinetic Marquee */}
-      <Footer />
-
-      {/* Slide-out Tasting Box Cart Drawer */}
-      <CartDrawer />
-
-      {/* Floating Micro-interaction Toast */}
-      <ToastNotification />
-    </div>
-  );
-}
+type CartItem = { name: string; price: number; qty: number };
 
 export default function Home() {
+  const [cart, setCart] = useState<CartItem[]>([]);
+  const [cartOpen, setCartOpen] = useState(false);
+  const [toast, setToast] = useState("");
+  const [toastVisible, setToastVisible] = useState(false);
+
+  const showToast = (msg: string) => {
+    setToast(msg);
+    setToastVisible(true);
+    setTimeout(() => setToastVisible(false), 2800);
+  };
+
+  const addToCart = useCallback((name: string, price: number) => {
+    setCart((prev) => {
+      const existing = prev.find((i) => i.name === name);
+      if (existing) {
+        return prev.map((i) => (i.name === name ? { ...i, qty: i.qty + 1 } : i));
+      }
+      return [...prev, { name, price, qty: 1 }];
+    });
+    showToast(`🍦 ${name} added to cart!`);
+  }, []);
+
+  const removeFromCart = useCallback((index: number) => {
+    setCart((prev) => prev.filter((_, i) => i !== index));
+  }, []);
+
+  const cartCount = cart.reduce((s, i) => s + i.qty, 0);
+
   return (
-    <CartProvider>
-      <MainAppContent />
-    </CartProvider>
+    <>
+      <Navbar cartCount={cartCount} onOpenCart={() => setCartOpen(true)} />
+      <main>
+        <Hero />
+        <Marquee />
+        <Products onAddCart={addToCart} />
+        <About />
+        <Flavours />
+        <Testimonials />
+        <CTA />
+      </main>
+      <Footer />
+
+      {cartOpen && (
+        <CartDrawer
+          items={cart}
+          onRemove={removeFromCart}
+          onClose={() => setCartOpen(false)}
+        />
+      )}
+
+      {/* Floating Feedback Toast */}
+      <div
+        className={`fixed bottom-8 left-1/2 -translate-x-1/2 z-[300] px-7 py-3.5 rounded-full text-sm font-black whitespace-nowrap transition-all duration-300 shadow-[0_16px_48px_rgba(42,14,0,0.25)] ${
+          toastVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8 pointer-events-none"
+        }`}
+        style={{
+          background: "linear-gradient(135deg, #2A0E00, #4A2000)",
+          color: "#FFF8EE",
+          border: "1.5px solid rgba(212,134,58,0.4)",
+        }}
+      >
+        {toast}
+      </div>
+    </>
   );
 }
