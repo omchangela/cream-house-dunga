@@ -17,13 +17,13 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 pb-16">
           {/* Brand */}
           <div className="lg:col-span-2">
-            <div className="flex items-center mb-4">
+            <div className="flex items-center mb-5">
               <Image
-                src="/images/nav-log-bg.webp"
+                src="/images/logo-white.webp"
                 alt="Cream House Logo"
-                width={130}
-                height={45}
-                className="h-9 w-auto object-contain"
+                width={200}
+                height={98}
+                className="h-12 sm:h-14 w-auto object-contain"
               />
             </div>
             <p className="text-sm leading-relaxed mb-6 max-w-sm" style={{ color: "rgba(255,200,150,0.55)" }}>

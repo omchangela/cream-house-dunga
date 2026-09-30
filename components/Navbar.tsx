@@ -61,9 +61,9 @@ export default function Navbar({
             <Image
               src="/images/logo-dark.webp"
               alt="Cream House"
-              width={140}
-              height={48}
-              className="h-8 sm:h-9.5 w-auto object-contain"
+              width={200}
+              height={98}
+              className="h-11 sm:h-13 md:h-16 w-auto object-contain"
               priority
             />
           </a>
@@ -172,9 +172,9 @@ export default function Navbar({
             <Image
               src="/images/logo-dark.webp"
               alt="Cream House"
-              width={160}
-              height={56}
-              className="h-11 w-auto object-contain"
+              width={220}
+              height={108}
+              className="h-16 w-auto object-contain"
             />
           </div>
 
