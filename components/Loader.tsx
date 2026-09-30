@@ -36,22 +36,14 @@ export default function Loader({ onDone }: { onDone: () => void }) {
 
       <div className="flex flex-col items-center gap-8 relative z-10">
         <div className="flex flex-col items-center gap-3">
-          <div
-            className="flex items-center px-6 py-3 rounded-full shadow-2xl animate-bounce-ice"
-            style={{
-              background: "#2A0E00",
-              border: "2px solid rgba(192, 76, 42, 0.4)",
-            }}
-          >
-            <Image
-              src="/images/nav-log-bg.webp"
-              alt="Cream House"
-              width={140}
-              height={50}
-              className="h-10 w-auto object-contain"
-              priority
-            />
-          </div>
+          <Image
+            src="/images/logo-dark.webp"
+            alt="Cream House"
+            width={160}
+            height={56}
+            className="h-12 w-auto object-contain animate-bounce-ice"
+            priority
+          />
           <p className="text-xs font-black tracking-[0.25em] uppercase" style={{ color: "#7A3E10" }}>Premium Ice Cream</p>
         </div>
 

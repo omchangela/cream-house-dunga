@@ -55,25 +55,17 @@ export default function Navbar({
               e.preventDefault();
               scrollTo("Home");
             }}
-            className="flex items-center group cursor-pointer"
+            className="flex items-center group cursor-pointer transition-transform duration-300 hover:scale-105"
             aria-label="Cream House Home"
           >
-            <div
-              className="flex items-center px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full transition-all duration-300 group-hover:scale-105 shadow-[0_4px_16px_rgba(42,14,0,0.18)]"
-              style={{
-                background: "#2A0E00",
-                border: "1.5px solid rgba(192, 76, 42, 0.35)",
-              }}
-            >
-              <Image
-                src="/images/nav-log-bg.webp"
-                alt="Cream House Logo"
-                width={120}
-                height={40}
-                className="h-6 sm:h-7.5 w-auto object-contain"
-                priority
-              />
-            </div>
+            <Image
+              src="/images/logo-dark.webp"
+              alt="Cream House"
+              width={140}
+              height={48}
+              className="h-8 sm:h-9.5 w-auto object-contain"
+              priority
+            />
           </a>
 
           {/* Desktop Nav */}
@@ -177,21 +169,13 @@ export default function Navbar({
       >
         <div className="flex flex-col items-center justify-center h-full gap-6">
           <div className="mb-4 flex items-center justify-center">
-            <div
-              className="flex items-center px-5 py-2.5 rounded-full shadow-lg"
-              style={{
-                background: "#2A0E00",
-                border: "1.5px solid rgba(192, 76, 42, 0.35)",
-              }}
-            >
-              <Image
-                src="/images/nav-log-bg.webp"
-                alt="Cream House"
-                width={130}
-                height={45}
-                className="h-8.5 w-auto object-contain"
-              />
-            </div>
+            <Image
+              src="/images/logo-dark.webp"
+              alt="Cream House"
+              width={160}
+              height={56}
+              className="h-11 w-auto object-contain"
+            />
           </div>
 
           {links.map((l) => (
